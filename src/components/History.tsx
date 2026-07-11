@@ -323,7 +323,7 @@ export default function History({ userId, onBack }: HistoryProps) {
                         e.stopPropagation();
                         handleDelete(session.id!);
                       }}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors md:opacity-0 group-hover:opacity-100"
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors md:opacity-0 group-hover:opacity-100 shrink-0"
                       title="Excluir Sessão"
                     >
                       <Trash2 className="w-5 h-5" />

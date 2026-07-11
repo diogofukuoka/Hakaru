@@ -140,12 +140,12 @@ export default function Editor({ session: initialSession, onSave, onDelete, onCa
           <div key={task.id} className="bg-white border border-slate-200 shadow-sm rounded p-3 flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="flex items-center gap-3 w-full md:w-auto md:flex-1">
               <span className="text-slate-400 font-mono text-xs font-bold w-6">{index + 1}.</span>
-              <input 
-                type="text" 
+              <textarea 
                 value={task.title}
                 onChange={(e) => handleUpdateTask(task.id, { title: e.target.value })}
-                className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 text-slate-900 text-xs font-medium flex-1 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 text-slate-900 text-xs font-medium flex-1 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none min-h-[36px]"
                 placeholder="Nome da etapa"
+                rows={2}
               />
             </div>
             
