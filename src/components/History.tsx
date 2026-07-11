@@ -46,7 +46,7 @@ export default function History({ userId, onBack }: HistoryProps) {
         if (!task) return;
         data.push({
           "Sessão": session.sessionTitle,
-          "Data": session.date,
+          "Data": formatDateStr(session.date),
           "Etapa": task.title,
           "Tipo": task.type,
           "Planejado": formatTimeHHMMSS(task.plannedDurationMinutes * 60),
