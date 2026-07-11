@@ -89,14 +89,50 @@ export default function Editor({ session: initialSession, onSave, onDelete, onCa
         </div>
       </div>
 
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-slate-900 mb-1 uppercase tracking-tight">Editar: {session.title}</h1>
-          <p className="text-slate-500 text-xs font-bold">Ajuste os tempos, nomes e tipos das etapas da sua sessão.</p>
+      <div className="mb-8 bg-white border border-slate-200 shadow-sm rounded-xl p-6">
+        <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Informações da Sessão</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="col-span-1 md:col-span-3">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Título</label>
+            <input 
+              type="text" 
+              value={session.title}
+              onChange={(e) => setSession(prev => ({ ...prev, title: e.target.value }))}
+              className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              placeholder="Ex: Sessão Diurna"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Horário</label>
+            <input 
+              type="text" 
+              value={session.timeRange || ''}
+              onChange={(e) => setSession(prev => ({ ...prev, timeRange: e.target.value }))}
+              className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              placeholder="Ex: 08:00 às 12:00"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Dias</label>
+            <input 
+              type="text" 
+              value={session.days || ''}
+              onChange={(e) => setSession(prev => ({ ...prev, days: e.target.value }))}
+              className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              placeholder="Ex: Segunda a Sábado"
+            />
+          </div>
+          <div className="flex flex-col justify-end">
+            <div className="bg-slate-100 text-slate-700 px-4 py-2 rounded font-mono font-bold text-sm h-[38px] flex items-center justify-center border border-slate-200">
+              Tempo Total: {formatTimeHHMMSS(totalMinutes * 60)}
+            </div>
+          </div>
         </div>
-        <div className="bg-slate-100 text-slate-700 px-4 py-2 rounded font-mono font-bold text-sm">
-          Tempo Total: {formatTimeHHMMSS(totalMinutes * 60)}
-        </div>
+      </div>
+
+      <div className="mb-4">
+        <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-1">Etapas da Sessão</h2>
+        <p className="text-slate-500 text-xs font-bold mb-4">Ajuste os tempos, nomes e tipos das etapas da sua sessão.</p>
       </div>
 
       <div className="space-y-3">
