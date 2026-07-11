@@ -1,0 +1,6 @@
+{
+  "name": "Guia do Concurseiro",
+  "description": "Aplicativo de controle de metas de estudo para concursos, com foco em teoria, resolução e revisão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

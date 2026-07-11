@@ -1,0 +1,42 @@
+{
+  "projectInfo": {
+    "name": "Guia do Concurseiro",
+    "description": "App de controle de estudos com histórico de sessões."
+  },
+  "schema": [
+    {
+      "collectionName": "users",
+      "description": "User profiles and settings.",
+      "fields": [
+        { "name": "createdAt", "type": "timestamp" }
+      ],
+      "subcollections": [
+        {
+          "collectionName": "history",
+          "description": "History of study sessions completed by the user.",
+          "fields": [
+            { "name": "sessionId", "type": "string" },
+            { "name": "sessionTitle", "type": "string" },
+            { "name": "date", "type": "string" },
+            { "name": "completedAt", "type": "timestamp" },
+            {
+              "name": "tasks",
+              "type": "array",
+              "items": {
+                "type": "map",
+                "fields": [
+                  { "name": "taskId", "type": "string" },
+                  { "name": "title", "type": "string" },
+                  { "name": "type", "type": "string" },
+                  { "name": "plannedDurationMinutes", "type": "number" },
+                  { "name": "actualDurationSeconds", "type": "number" },
+                  { "name": "completed", "type": "boolean" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
