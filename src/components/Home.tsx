@@ -7,9 +7,10 @@ interface HomeProps {
   onStartSession: (sessionId: string) => void;
   onEditSession: (sessionId: string) => void;
   onViewHistory: () => void;
+  onAddSession: () => void;
 }
 
-export default function Home({ sessions, onStartSession, onEditSession, onViewHistory }: HomeProps) {
+export default function Home({ sessions, onStartSession, onEditSession, onViewHistory, onAddSession }: HomeProps) {
   return (
     <div className="max-w-4xl mx-auto w-full pt-8 pb-16 px-4">
       <header className="mb-12 flex flex-col items-center text-center">
@@ -23,6 +24,15 @@ export default function Home({ sessions, onStartSession, onEditSession, onViewHi
           Ver Histórico de Estudos
         </button>
       </header>
+
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={onAddSession}
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+        >
+          Nova Sessão
+        </button>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {sessions.map((session) => {
