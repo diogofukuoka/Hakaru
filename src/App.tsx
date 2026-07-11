@@ -50,8 +50,27 @@ export default function App() {
     setView('history');
   };
 
+  const handleAddSession = () => {
+    const newSession: Session = {
+      id: Math.random().toString(36).slice(2, 9),
+      title: 'Nova Sessão',
+      tasks: [],
+      timeRange: '08:00 - 12:00',
+      days: 'Seg a Sex'
+    };
+    setSessions(prev => [...prev, newSession]);
+    setActiveSessionId(newSession.id);
+    setView('edit');
+  };
+
   const handleSaveSession = (updatedSession: Session) => {
     setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+    setView('home');
+    setActiveSessionId(null);
+  };
+
+  const handleDeleteSession = (id: string) => {
+    setSessions(prev => prev.filter(s => s.id !== id));
     setView('home');
     setActiveSessionId(null);
   };
@@ -71,6 +90,7 @@ export default function App() {
           onStartSession={handleStartSession} 
           onEditSession={handleEditSession} 
           onViewHistory={handleViewHistory}
+          onAddSession={handleAddSession}
         />
       )}
       
@@ -78,6 +98,7 @@ export default function App() {
         <Editor 
           session={activeSession} 
           onSave={handleSaveSession}
+          onDelete={() => handleDeleteSession(activeSession.id)}
           onCancel={handleClose}
         />
       )}
