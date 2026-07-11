@@ -323,7 +323,7 @@ export default function History({ userId, onBack }: HistoryProps) {
                         e.stopPropagation();
                         handleDelete(session.id!);
                       }}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-2 hidden md:block group-hover:block"
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors md:opacity-0 group-hover:opacity-100"
                       title="Excluir Sessão"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -331,18 +331,6 @@ export default function History({ userId, onBack }: HistoryProps) {
                   )}
                 </div>
               </div>
-              {session.id && (
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(session.id!);
-                  }}
-                  className="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors md:hidden block"
-                  title="Excluir Sessão"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              )}
               
               {!collapsedSessions[sessionId] && (
               <div className="p-4 space-y-2">

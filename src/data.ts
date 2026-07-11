@@ -4,6 +4,8 @@ export const initialSessions: Session[] = [
   {
     id: "1",
     title: "Sessão Diurna",
+    timeRange: "08:00 às 12:00",
+    days: "Segunda a Sábado",
     tasks: [
       { id: "t1", title: "Conversar com o Live do Gemini sobre os tópicos do dia anterior da disciplina 1", durationMinutes: 15, type: "Revisão" },
       { id: "t2", title: "Conversar com o Live do Gemini sobre os tópicos do dia anterior da disciplina 2", durationMinutes: 15, type: "Revisão" },
@@ -13,6 +15,19 @@ export const initialSessions: Session[] = [
       { id: "t6", title: "Ler a teoria dos conteúdos que errei para reforçar", durationMinutes: 30, type: "Teoria" },
       { id: "t7", title: "Escrever em folha branca o que aprendi (disciplina 1)", durationMinutes: 10, type: "Revisão" },
       { id: "t8", title: "Escrever em folha branca o que aprendi (disciplina 2)", durationMinutes: 11, type: "Revisão" }
+    ]
+  },
+  {
+    id: "2",
+    title: "Sessão Noturna",
+    timeRange: "21:00 às 00:00",
+    days: "Segunda a Sábado",
+    tasks: [
+      { id: "n1", title: "Estudo da Teoria - Disciplina 3", durationMinutes: 50, type: "Teoria" },
+      { id: "n2", title: "Pausa", durationMinutes: 10, type: "Pausa" },
+      { id: "n3", title: "Estudo da Teoria - Disciplina 4", durationMinutes: 50, type: "Teoria" },
+      { id: "n4", title: "Resolução de questões no QC - Disciplina 3", durationMinutes: 15, type: "Resolução" },
+      { id: "n5", title: "Resolução de questões no QC - Disciplina 4", durationMinutes: 15, type: "Resolução" }
     ]
   }
 ];

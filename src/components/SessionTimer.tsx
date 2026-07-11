@@ -244,9 +244,6 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
               className="text-xs font-bold text-slate-700 outline-none bg-transparent"
             />
           </div>
-          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded">
-            Etapa {currentTaskIndex + 1} de {totalTasks}
-          </div>
         </div>
       </div>
 
@@ -304,9 +301,14 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
 
         <div className="flex-1 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center mb-6">
-          <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider mb-4 border ${getTypeColor(currentTask.type)}`}>
-            {currentTask.type}
-          </span>
+          <div className="flex items-center gap-3 mb-4">
+            <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider border ${getTypeColor(currentTask.type)}`}>
+              {currentTask.type}
+            </span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded">
+              Etapa {currentTaskIndex + 1} de {totalTasks}
+            </span>
+          </div>
           <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
             Tempo Total da Sessão
           </div>
@@ -390,11 +392,11 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
           <div className="w-full max-w-md bg-white border border-slate-200 rounded p-4 shadow-sm flex items-center justify-between">
             <div>
               <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Próxima Etapa</div>
-              <div className="text-xs font-bold text-slate-700 truncate max-w-[200px] md:max-w-sm">
+              <div className="text-xs font-bold text-slate-700 max-w-sm">
                 {session.tasks[currentTaskIndex + 1].title}
               </div>
             </div>
-            <div className="text-xs text-slate-400 font-mono font-bold">
+            <div className="text-xs text-slate-400 font-mono font-bold whitespace-nowrap ml-4">
               {session.tasks[currentTaskIndex + 1].durationMinutes}m
             </div>
           </div>

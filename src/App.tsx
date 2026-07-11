@@ -22,6 +22,12 @@ export default function App() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (sessions.length === 1 && sessions[0].id === "1" && initialSessions.length > 1) {
+      setSessions(initialSessions);
+    }
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
