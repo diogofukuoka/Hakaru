@@ -6,10 +6,11 @@ import { getTypeColor, formatTimeHHMMSS } from '../utils/formatters';
 interface EditorProps {
   session: Session;
   onSave: (session: Session) => void;
+  onDelete?: () => void;
   onCancel: () => void;
 }
 
-export default function Editor({ session: initialSession, onSave, onCancel }: EditorProps) {
+export default function Editor({ session: initialSession, onSave, onDelete, onCancel }: EditorProps) {
   const [session, setSession] = useState<Session>(initialSession);
 
   const handleUpdateTask = (id: string, updates: Partial<Task>) => {
@@ -68,13 +69,24 @@ export default function Editor({ session: initialSession, onSave, onCancel }: Ed
           <ArrowLeft className="w-4 h-4" />
           Voltar
         </button>
-        <button 
-          onClick={handleSave}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
-        >
-          <Save className="w-4 h-4" />
-          Salvar Alterações
-        </button>
+        <div className="flex gap-3">
+          {onDelete && (
+            <button 
+              onClick={onDelete}
+              className="bg-white border border-red-200 text-red-600 hover:bg-red-50 px-4 py-2 rounded flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+            >
+              <Trash2 className="w-4 h-4" />
+              Excluir
+            </button>
+          )}
+          <button 
+            onClick={handleSave}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+          >
+            <Save className="w-4 h-4" />
+            Salvar Alterações
+          </button>
+        </div>
       </div>
 
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
