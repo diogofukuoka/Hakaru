@@ -5,6 +5,8 @@ import { formatTime, formatTimeHHMMSS, getTypeColor } from '../utils/formatters'
 import { saveSessionHistory } from '../lib/firebase';
 import { topicsData } from '../data';
 
+import { useLocalStorage } from '../hooks/useLocalStorage';
+
 interface SessionTimerProps {
   session: Session;
   userId?: string;
@@ -19,7 +21,7 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
   
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().split('T')[0]);
   const [taskHistory, setTaskHistory] = useState<TaskHistory[]>([]);
-  const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
+  const [completedTopics, setCompletedTopics] = useLocalStorage<Record<string, boolean>>('concurseiro-topics', {});
   const [collapsedDisciplines, setCollapsedDisciplines] = useState<Record<string, boolean>>({});
 
   const toggleTopic = (discipline: string, topicIndex: number) => {
