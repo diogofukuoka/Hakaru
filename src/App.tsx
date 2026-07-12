@@ -7,8 +7,10 @@ import Home from './components/Home';
 import Editor from './components/Editor';
 import SessionTimer from './components/SessionTimer';
 import History from './components/History';
+import SyncModal from './components/SyncModal';
 import { initialSessions } from './data';
 import { useFirebaseSessions } from './hooks/useFirebaseSessions';
+import { useLocalStorage } from './hooks/useLocalStorage';
 import { Session, ViewState } from './types';
 import { signIn, auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -19,7 +21,11 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   
-  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(user?.uid);
+  const [syncId, setSyncId] = useLocalStorage<string | null>('concurseiro-sync-id', null);
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  
+  const effectiveUserId = syncId || user?.uid;
+  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(effectiveUserId);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -83,6 +89,16 @@ export default function App() {
 
   const activeSession = sessions.find(s => s.id === activeSessionId);
 
+  const handleSync = (key: string) => {
+    setSyncId(key.trim());
+    setShowSyncModal(false);
+  };
+
+  const handleResetSync = () => {
+    setSyncId(null);
+    setShowSyncModal(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -103,9 +119,20 @@ export default function App() {
           onEditSession={handleEditSession} 
           onViewHistory={handleViewHistory}
           onAddSession={handleAddSession}
+          onOpenSync={() => setShowSyncModal(true)}
         />
       )}
       
+      {showSyncModal && user && (
+        <SyncModal 
+          currentKey={user.uid}
+          onSync={handleSync}
+          onClose={() => setShowSyncModal(false)}
+          onReset={handleResetSync}
+          isUsingCustomKey={!!syncId}
+        />
+      )}
+
       {view === 'edit' && activeSession && (
         <Editor 
           session={activeSession} 
