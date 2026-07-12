@@ -23,11 +23,15 @@ export const initialSessions: Session[] = [
     timeRange: "21:00 às 00:00",
     days: "Segunda a Sábado",
     tasks: [
-      { id: "n1", title: "Estudo da Teoria - Disciplina 3", durationMinutes: 50, type: "Teoria" },
-      { id: "n2", title: "Pausa", durationMinutes: 10, type: "Pausa" },
-      { id: "n3", title: "Estudo da Teoria - Disciplina 4", durationMinutes: 50, type: "Teoria" },
-      { id: "n4", title: "Resolução de questões no QC - Disciplina 3", durationMinutes: 15, type: "Resolução" },
-      { id: "n5", title: "Resolução de questões no QC - Disciplina 4", durationMinutes: 15, type: "Resolução" }
+      { id: "n1", title: "Ler mapa conceitual dos tópicos do dia anterior da disciplina 1", durationMinutes: 12, type: "Revisão" },
+      { id: "n2", title: "Ler mapa conceitual dos tópicos do dia anterior da disciplina 2", durationMinutes: 12, type: "Revisão" },
+      { id: "n3", title: "Pausa", durationMinutes: 5, type: "Pausa" },
+      { id: "n4", title: "Ler o PDF da disciplina 1, dos tópicos atuais de hoje", durationMinutes: 55, type: "Teoria" },
+      { id: "n5", title: "Pausa", durationMinutes: 5, type: "Pausa" },
+      { id: "n6", title: "Ler o PDF da disciplina 2, dos tópicos atuais de hoje", durationMinutes: 55, type: "Teoria" },
+      { id: "n7", title: "Pausa", durationMinutes: 5, type: "Pausa" },
+      { id: "n8", title: "Ler mapa conceitual dos tópicos atuais de hoje da disciplina 1", durationMinutes: 12, type: "Revisão" },
+      { id: "n9", title: "Ler mapa conceitual dos tópicos atuais de hoje da disciplina 2", durationMinutes: 12, type: "Revisão" }
     ]
   }
 ];
