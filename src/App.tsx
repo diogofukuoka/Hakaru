@@ -8,24 +8,18 @@ import Editor from './components/Editor';
 import SessionTimer from './components/SessionTimer';
 import History from './components/History';
 import { initialSessions } from './data';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useFirebaseSessions } from './hooks/useFirebaseSessions';
 import { Session, ViewState } from './types';
 import { signIn, auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 export default function App() {
-  const [sessions, setSessions] = useLocalStorage<Session[]>('concurseiro-sessions', initialSessions);
   const [view, setView] = useState<ViewState>('home');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-
   const [authError, setAuthError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (sessions.length === 1 && sessions[0].id === "1" && initialSessions.length > 1) {
-      setSessions(initialSessions);
-    }
-  }, []);
+  
+  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(user?.uid);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -39,6 +33,7 @@ export default function App() {
         });
       }
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -64,19 +59,19 @@ export default function App() {
       timeRange: '08:00 - 12:00',
       days: 'Seg a Sex'
     };
-    setSessions(prev => [...prev, newSession]);
+    addSession(newSession);
     setActiveSessionId(newSession.id);
     setView('edit');
   };
 
   const handleSaveSession = (updatedSession: Session) => {
-    setSessions(prev => prev.map(s => s.id === updatedSession.id ? updatedSession : s));
+    updateSession(updatedSession);
     setView('home');
     setActiveSessionId(null);
   };
 
   const handleDeleteSession = (id: string) => {
-    setSessions(prev => prev.filter(s => s.id !== id));
+    deleteSession(id);
     setView('home');
     setActiveSessionId(null);
   };
@@ -87,6 +82,17 @@ export default function App() {
   };
 
   const activeSession = sessions.find(s => s.id === activeSessionId);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center text-slate-500 flex flex-col items-center">
+          <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+          Carregando Sessões...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-500/30">
