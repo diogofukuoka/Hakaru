@@ -1,4 +1,4 @@
-import { Play, Clock, Edit2, History as HistoryIcon } from 'lucide-react';
+import { Play, Clock, Edit2, History as HistoryIcon, Smartphone } from 'lucide-react';
 import { Session } from '../types';
 import { getTotalDuration } from '../utils/formatters';
 
@@ -8,12 +8,20 @@ interface HomeProps {
   onEditSession: (sessionId: string) => void;
   onViewHistory: () => void;
   onAddSession: () => void;
+  onOpenSync: () => void;
 }
 
-export default function Home({ sessions, onStartSession, onEditSession, onViewHistory, onAddSession }: HomeProps) {
+export default function Home({ sessions, onStartSession, onEditSession, onViewHistory, onAddSession, onOpenSync }: HomeProps) {
   return (
     <div className="max-w-4xl mx-auto w-full pt-8 pb-16 px-4">
-      <header className="mb-12 flex flex-col items-center text-center">
+      <header className="mb-12 flex flex-col items-center text-center relative">
+        <button 
+          onClick={onOpenSync}
+          className="absolute right-0 top-0 text-slate-400 hover:text-indigo-600 transition-colors p-2"
+          title="Sincronizar Dispositivos"
+        >
+          <Smartphone className="w-5 h-5" />
+        </button>
         <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Hakaru</h1>
         <p className="text-slate-500 font-medium mb-6">Controle de metas e ciclo de estudos diário</p>
         <button 
