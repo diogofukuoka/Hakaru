@@ -1,7 +1,7 @@
-import { Play, Clock, Edit2, History as HistoryIcon, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { Play, Clock, Edit2, History as HistoryIcon, Smartphone, X, Copy, Check } from 'lucide-react';
 import { Session } from '../types';
 import { getTotalDuration } from '../utils/formatters';
-import { logOut } from '../lib/firebase';
 
 interface HomeProps {
   sessions: Session[];
@@ -9,19 +9,31 @@ interface HomeProps {
   onEditSession: (sessionId: string) => void;
   onViewHistory: () => void;
   onAddSession: () => void;
+  syncId?: string;
 }
 
-export default function Home({ sessions, onStartSession, onEditSession, onViewHistory, onAddSession }: HomeProps) {
+export default function Home({ sessions, onStartSession, onEditSession, onViewHistory, onAddSession, syncId }: HomeProps) {
+  const [showSyncInfo, setShowSyncInfo] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const syncUrl = `${window.location.origin}${window.location.pathname}?sync=${syncId}`;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(syncUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto w-full pt-8 pb-16 px-4">
       <header className="mb-12 flex flex-col items-center text-center relative">
         <button 
-          onClick={() => logOut()}
-          className="absolute right-0 top-0 text-slate-400 hover:text-red-500 transition-colors p-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
-          title="Sair da Conta"
+          onClick={() => setShowSyncInfo(true)}
+          className="absolute right-0 top-0 text-slate-400 hover:text-indigo-600 transition-colors p-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+          title="Sincronizar"
         >
-          <LogOut className="w-4 h-4" />
-          Sair
+          <Smartphone className="w-4 h-4" />
+          Sincronizar
         </button>
         <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Hakaru</h1>
         <p className="text-slate-500 font-medium mb-6">Controle de metas e ciclo de estudos diário</p>
@@ -33,6 +45,34 @@ export default function Home({ sessions, onStartSession, onEditSession, onViewHi
           Ver Histórico de Estudos
         </button>
       </header>
+
+      {showSyncInfo && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+            <button 
+              onClick={() => setShowSyncInfo(false)}
+              className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight mb-2">Sincronizar Dispositivos</h2>
+            <p className="text-slate-600 text-sm mb-6">
+              Para usar o Hakaru com seus mesmos dados em outro aparelho (celular, tablet ou PC), basta copiar o link abaixo e acessar no outro dispositivo.
+            </p>
+            <div className="bg-slate-50 border border-slate-200 rounded p-3 flex items-center justify-between gap-3 mb-2">
+              <span className="font-mono text-xs text-slate-500 truncate select-all">{syncUrl}</span>
+              <button 
+                onClick={handleCopy}
+                className="flex-shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-700 p-2 rounded transition-colors"
+                title="Copiar link"
+              >
+                {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            {copied && <p className="text-xs font-bold text-green-600 text-center">Link copiado com sucesso!</p>}
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-end mb-6">
         <button
