@@ -247,7 +247,7 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 flex-1">
+      <div className="flex flex-col-reverse md:flex-row gap-8 flex-1">
         {/* Sidebar de Tópicos */}
         <div className="w-full md:w-80 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[600px] overflow-hidden">
           <div className="p-4 border-b border-slate-200 bg-slate-50">
