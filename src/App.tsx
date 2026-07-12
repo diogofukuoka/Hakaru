@@ -7,7 +7,6 @@ import Home from './components/Home';
 import Editor from './components/Editor';
 import SessionTimer from './components/SessionTimer';
 import History from './components/History';
-import SyncModal from './components/SyncModal';
 import { initialSessions } from './data';
 import { useFirebaseSessions } from './hooks/useFirebaseSessions';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -21,11 +20,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   
-  const [syncId, setSyncId] = useLocalStorage<string | null>('concurseiro-sync-id', null);
-  const [showSyncModal, setShowSyncModal] = useState(false);
-  
-  const effectiveUserId = syncId || user?.uid;
-  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(effectiveUserId);
+  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(user?.uid);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,15 +28,44 @@ export default function App() {
         setUser(user);
         setAuthError(null);
       } else {
-        signIn().catch((error) => {
-          console.error("Firebase auth error:", error);
-          setAuthError(error.message);
-        });
+        setUser(null);
       }
     });
 
     return () => unsubscribe();
   }, []);
+
+  const handleLogin = async () => {
+    try {
+      setAuthError(null);
+      await signIn();
+    } catch (error: any) {
+      console.error("Firebase auth error:", error);
+      setAuthError(error.message);
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-8 max-w-sm w-full text-center">
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Hakaru</h1>
+          <p className="text-slate-500 font-medium mb-8 text-sm">Sincronização instantânea em todos os seus dispositivos.</p>
+          
+          <button 
+            onClick={handleLogin}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            Entrar com Google
+          </button>
+          
+          {authError && (
+            <p className="mt-4 text-xs text-red-500 font-medium">{authError}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const handleStartSession = (id: string) => {
     setActiveSessionId(id);
@@ -89,16 +113,6 @@ export default function App() {
 
   const activeSession = sessions.find(s => s.id === activeSessionId);
 
-  const handleSync = (key: string) => {
-    setSyncId(key.trim());
-    setShowSyncModal(false);
-  };
-
-  const handleResetSync = () => {
-    setSyncId(null);
-    setShowSyncModal(false);
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -119,20 +133,9 @@ export default function App() {
           onEditSession={handleEditSession} 
           onViewHistory={handleViewHistory}
           onAddSession={handleAddSession}
-          onOpenSync={() => setShowSyncModal(true)}
         />
       )}
       
-      {showSyncModal && user && (
-        <SyncModal 
-          currentKey={user.uid}
-          onSync={handleSync}
-          onClose={() => setShowSyncModal(false)}
-          onReset={handleResetSync}
-          isUsingCustomKey={!!syncId}
-        />
-      )}
-
       {view === 'edit' && activeSession && (
         <Editor 
           session={activeSession} 
