@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
   projectId: "gen-lang-client-0930791125",
@@ -13,16 +12,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app, "ai-studio-guiadoconcurseir-09eeac97-8f70-4862-91ea-02a778642591");
-const auth = getAuth(app);
 
-export { app, db, auth };
-
-export const signIn = () => {
-  const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider);
-};
-
-export const logOut = () => signOut(auth);
+export { app, db };
 
 export const saveSessionHistory = async (userId: string, historyData: any) => {
   const historyRef = doc(collection(db, `users/${userId}/history`));
