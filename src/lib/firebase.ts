@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
-import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
   projectId: "gen-lang-client-0930791125",
@@ -17,7 +17,12 @@ const auth = getAuth(app);
 
 export { app, db, auth };
 
-export const signIn = () => signInAnonymously(auth);
+export const signIn = () => {
+  const provider = new GoogleAuthProvider();
+  return signInWithPopup(auth, provider);
+};
+
+export const logOut = () => signOut(auth);
 
 export const saveSessionHistory = async (userId: string, historyData: any) => {
   const historyRef = doc(collection(db, `users/${userId}/history`));
