@@ -60,7 +60,20 @@ export default function App() {
           </button>
           
           {authError && (
-            <p className="mt-4 text-xs text-red-500 font-medium">{authError}</p>
+            <div className="mt-4 text-left bg-red-50 border border-red-200 p-4 rounded-lg">
+              <p className="text-sm text-red-600 font-bold mb-2">Erro de Autenticação</p>
+              {authError.includes('unauthorized-domain') ? (
+                <div className="text-xs text-red-700 space-y-2">
+                  <p>O domínio atual não está autorizado no Firebase para Login com Google.</p>
+                  <p>1. Acesse o <a href="https://console.firebase.google.com/project/gen-lang-client-0930791125/authentication/settings" target="_blank" rel="noreferrer" className="underline font-bold">Console do Firebase</a>.</p>
+                  <p>2. Vá em <strong>Authentication</strong> &gt; <strong>Settings</strong> &gt; <strong>Authorized domains</strong>.</p>
+                  <p>3. Adicione este domínio à lista:</p>
+                  <code className="block bg-red-100 p-1.5 rounded font-mono text-center select-all">{window.location.hostname}</code>
+                </div>
+              ) : (
+                <p className="text-xs text-red-700">{authError}</p>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -153,52 +166,11 @@ export default function App() {
         />
       )}
 
-      {view === 'history' && (
-        user ? (
-          <History
-            userId={user.uid}
-            onBack={handleClose}
-          />
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] p-4">
-            {authError ? (
-              <div className="text-center max-w-lg bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <div className="text-red-500 font-bold mb-3 text-lg">Erro: Criação de Contas Bloqueada</div>
-                <div className="text-slate-600 text-sm mb-6 text-left space-y-3">
-                  <p>
-                    O seu provedor de login "Anônimo" está ativado, mas a **criação de novas contas** está bloqueada nas configurações do seu projeto do Firebase.
-                  </p>
-                  <p className="font-semibold text-slate-800">Siga estes passos rápidos para corrigir:</p>
-                  <ol className="list-decimal pl-5 space-y-2 text-slate-600">
-                    <li>
-                      Clique no link abaixo para abrir a aba de **Configurações** do seu projeto:
-                      <br />
-                      <a href="https://console.firebase.google.com/project/gen-lang-client-0930791125/authentication/settings" target="_blank" rel="noreferrer" className="text-indigo-600 font-bold hover:underline inline-block mt-1">
-                        Abrir Configurações do Firebase ↗
-                      </a>
-                    </li>
-                    <li>Na seção de <strong>"Ações do usuário" (User actions)</strong>, marque a opção <strong>"Permitir criação/cadastro" (Enable create/sign-up)</strong>.</li>
-                    <li>Clique em <strong>Salvar</strong> na parte inferior.</li>
-                  </ol>
-                  <p className="text-[10px] text-slate-400 mt-4 border-t pt-3">
-                    Código técnico do erro: {authError}
-                  </p>
-                </div>
-                <button 
-                  onClick={handleClose}
-                  className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold uppercase transition-colors"
-                >
-                  Voltar para o Início
-                </button>
-              </div>
-            ) : (
-              <div className="text-center text-slate-500 flex flex-col items-center">
-                <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-                Autenticando...
-              </div>
-            )}
-          </div>
-        )
+      {view === 'history' && user && (
+        <History
+          userId={user.uid}
+          onBack={handleClose}
+        />
       )}
     </div>
   );
