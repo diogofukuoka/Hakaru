@@ -11,74 +11,31 @@ import { initialSessions } from './data';
 import { useFirebaseSessions } from './hooks/useFirebaseSessions';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { Session, ViewState } from './types';
-import { signIn, auth } from './lib/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
 
 export default function App() {
   const [view, setView] = useState<ViewState>('home');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [authError, setAuthError] = useState<string | null>(null);
-  
-  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(user?.uid);
+  const [syncId, setSyncId] = useLocalStorage<string>('hakaru-sync-id', '');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        setAuthError(null);
-      } else {
-        setUser(null);
+    const urlParams = new URLSearchParams(window.location.search);
+    const syncParam = urlParams.get('sync');
+    
+    if (syncParam && syncParam.length > 20) {
+      setSyncId(syncParam);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (!syncId) {
+      // Generate a new random ID of 24 characters
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let newId = '';
+      for (let i = 0; i < 24; i++) {
+        newId += chars.charAt(Math.floor(Math.random() * chars.length));
       }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = async () => {
-    try {
-      setAuthError(null);
-      await signIn();
-    } catch (error: any) {
-      console.error("Firebase auth error:", error);
-      setAuthError(error.message);
+      setSyncId(newId);
     }
-  };
+  }, [syncId, setSyncId]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-8 max-w-sm w-full text-center">
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Hakaru</h1>
-          <p className="text-slate-500 font-medium mb-8 text-sm">Sincronização instantânea em todos os seus dispositivos.</p>
-          
-          <button 
-            onClick={handleLogin}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-          >
-            Entrar com Google
-          </button>
-          
-          {authError && (
-            <div className="mt-4 text-left bg-red-50 border border-red-200 p-4 rounded-lg">
-              <p className="text-sm text-red-600 font-bold mb-2">Erro de Autenticação</p>
-              {authError.includes('unauthorized-domain') ? (
-                <div className="text-xs text-red-700 space-y-2">
-                  <p>O domínio atual não está autorizado no Firebase para Login com Google.</p>
-                  <p>1. Acesse o <a href="https://console.firebase.google.com/project/gen-lang-client-0930791125/authentication/settings" target="_blank" rel="noreferrer" className="underline font-bold">Console do Firebase</a>.</p>
-                  <p>2. Vá em <strong>Authentication</strong> &gt; <strong>Settings</strong> &gt; <strong>Authorized domains</strong>.</p>
-                  <p>3. Adicione este domínio à lista:</p>
-                  <code className="block bg-red-100 p-1.5 rounded font-mono text-center select-all">{window.location.hostname}</code>
-                </div>
-              ) : (
-                <p className="text-xs text-red-700">{authError}</p>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const { sessions, loading, updateSession, addSession, deleteSession } = useFirebaseSessions(syncId || 'default');
 
   const handleStartSession = (id: string) => {
     setActiveSessionId(id);
@@ -126,7 +83,7 @@ export default function App() {
 
   const activeSession = sessions.find(s => s.id === activeSessionId);
 
-  if (loading) {
+  if (!syncId || loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center text-slate-500 flex flex-col items-center">
@@ -146,6 +103,7 @@ export default function App() {
           onEditSession={handleEditSession} 
           onViewHistory={handleViewHistory}
           onAddSession={handleAddSession}
+          syncId={syncId}
         />
       )}
       
@@ -161,14 +119,14 @@ export default function App() {
       {view === 'timer' && activeSession && (
         <SessionTimer 
           session={activeSession}
-          userId={user?.uid}
+          userId={syncId}
           onClose={handleClose}
         />
       )}
 
-      {view === 'history' && user && (
+      {view === 'history' && (
         <History
-          userId={user.uid}
+          userId={syncId}
           onBack={handleClose}
         />
       )}
