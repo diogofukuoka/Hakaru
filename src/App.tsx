@@ -21,9 +21,11 @@ export default function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const syncParam = urlParams.get('sync');
     
-    if (syncParam && syncParam.length > 20) {
+    let currentSyncId = syncId;
+
+    if (syncParam && syncParam.length > 20 && syncParam !== syncId) {
       setSyncId(syncParam);
-      window.history.replaceState({}, document.title, window.location.pathname);
+      currentSyncId = syncParam;
     } else if (!syncId) {
       // Generate a new random ID of 24 characters
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -32,6 +34,13 @@ export default function App() {
         newId += chars.charAt(Math.floor(Math.random() * chars.length));
       }
       setSyncId(newId);
+      currentSyncId = newId;
+    }
+
+    if (currentSyncId && syncParam !== currentSyncId) {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('sync', currentSyncId);
+      window.history.replaceState({}, document.title, newUrl.toString());
     }
   }, [syncId, setSyncId]);
 

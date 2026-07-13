@@ -9,6 +9,10 @@ service cloud.firestore {
         allow read, write: if userId.size() > 20;
       }
       
+      match /topics/{document=**} {
+        allow read, write: if userId.size() > 20;
+      }
+      
       match /sessions/{sessionId} {
         allow read, write: if userId.size() > 20;
       }

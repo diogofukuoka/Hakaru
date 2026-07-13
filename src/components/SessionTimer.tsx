@@ -6,6 +6,7 @@ import { saveSessionHistory } from '../lib/firebase';
 import { topicsData } from '../data';
 
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useFirebaseTopics } from '../hooks/useFirebaseTopics';
 
 interface SessionTimerProps {
   session: Session;
@@ -21,12 +22,13 @@ export default function SessionTimer({ session, userId, onClose }: SessionTimerP
   
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().split('T')[0]);
   const [taskHistory, setTaskHistory] = useState<TaskHistory[]>([]);
-  const [completedTopics, setCompletedTopics] = useLocalStorage<Record<string, boolean>>('concurseiro-topics', {});
+  const { completedTopics, updateTopics, loading: topicsLoading } = useFirebaseTopics(userId);
   const [collapsedDisciplines, setCollapsedDisciplines] = useState<Record<string, boolean>>({});
 
   const toggleTopic = (discipline: string, topicIndex: number) => {
     const key = `${discipline}-${topicIndex}`;
-    setCompletedTopics(prev => ({ ...prev, [key]: !prev[key] }));
+    const newTopics = { ...completedTopics, [key]: !completedTopics[key] };
+    updateTopics(newTopics);
   };
 
   const toggleDiscipline = (discipline: string) => {
